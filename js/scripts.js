@@ -2,6 +2,7 @@
 USE A PUBLIC API TO CREATE AN EMPLOYEE DIRECTORY PROJECT
 *********************************************/
 const gallery = document.getElementById('gallery');
+const modal = document.getElementById('modal');
 
 
 //-------------------------------
@@ -17,7 +18,7 @@ function fetchData(url) {
 
 Promise.all([
   fetchData('https://randomuser.me/api/?format=json&results=12')
-]).then(data => dataBlock(data))
+]).then(data => dataBlock(data)).then(document.querySelectorAll('.modal-container').style.display = 'none')
 
 
   //-------------------------------
@@ -38,6 +39,7 @@ function dataBlock(data) {
       const address = data[0].results[i].location.street + ', ' + location + ' ' + data[0].results[i].location.postcode;
       const birthday = data[0].results[i].dob.date;
       generateGallery(bioPic, name, email, location);
+      generateModal(bioPic, name, email, location, cellNumber, address, birthday);
   }
 }
 
@@ -49,18 +51,43 @@ function checkStatus(response) {
   }
 }
 
-function generateGallery(dataImage, dataName, dataEmail, dataLocation) {
+function generateGallery(image, name, email, location) {
   const galleryBio = `
     <div class="card">
         <div class="card-img-container">
-            <img class="card-img" src="${dataImage}" alt="profile picture">
+            <img class="card-img" src="${image}" alt="profile picture">
         </div>
         <div class="card-info-container">
-            <h3 id="name" class="card-name cap">${dataName}</h3>
-            <p class="card-text">${dataEmail}</p>
-            <p class="card-text cap">${dataLocation}</p>
+            <h3 id="name" class="card-name cap">${name}</h3>
+            <p class="card-text">${email}</p>
+            <p class="card-text cap">${location}</p>
         </div>
     </div>
   `;
   gallery.innerHTML += galleryBio;
 }
+
+
+function generateModal(image, name, email, location, cell, address, birthday) {
+  const modalBio = `
+  <div class="modal-container">
+      <div class="modal">
+          <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+          <div class="modal-info-container">
+              <img class="modal-img" src="${image}" alt="profile picture">
+              <h3 id="name" class="modal-name cap">${name}</h3>
+              <p class="modal-text">${email}</p>
+              <p class="modal-text cap">${location}</p>
+              <hr>
+              <p class="modal-text">${cell}</p>
+              <p class="modal-text">${address}</p>
+              <p class="modal-text">${birthday}</p>
+          </div>
+      </div>
+  `;
+  modal.innerHTML += modalBio;
+}
+
+//-------------------------------
+// EVENT LISTNER
+//-------------------------------
