@@ -17,32 +17,41 @@ function fetchData(url) {
 }
 
 Promise.all([
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
+  fetchData('https://randomuser.me/api/?format=json'),
   fetchData('https://randomuser.me/api/?format=json')
-  ]).then(data => {
-    const bioPic = data[0].results[0].picture.thumbnail;
-    const name = data[0].results[0].name.first.charAt(0).toUpperCase() + data[0].results[0].name.first.slice(1) +
-      ' ' +
-      data[0].results[0].name.last.charAt(0).toUpperCase() + data[0].results[0].name.last.slice(1);
-    const email = data[0].results[0].email;
-    const location = data[0].results[0].location.city.charAt(0).toUpperCase() + data[0].results[0].location.city.slice(1);
-    const cellNumber = data[0].results[0].phone;
-    const address = data[0].results[0].location.street + ', ' + location + ' ' + data[0].results[0].location.postcode;
-    const birthday = data[0].results[0].dob.date;
-    console.log(birthday);
-})
+]).then(data => dataBlock(data))
 
-/*
-  .then(data => {
-    const A = data[insert number].message;
-    const B = data[insert number].message;
-
-    function (for first info retrieval);
-    function (for second info retrieval);
-  })*/
 
   //-------------------------------
   // HELPER FUNCTIONS
   //-------------------------------
+
+function dataBlock(data) {
+  for (let i = 0; i <=11 ; i += 1) {
+      const bioPic = data[i].results[0].picture.large;
+      const name = data[i].results[0].name.first.charAt(0).toUpperCase() + data[i].results[0].name.first.slice(1) +
+        ' ' +
+        data[i].results[0].name.last.charAt(0).toUpperCase() + data[i].results[0].name.last.slice(1);
+      const email = data[i].results[0].email;
+      const location = data[i].results[0].location.city.charAt(0).toUpperCase() + data[i].results[0].location.city.slice(1) +
+        ', ' +
+        data[i].results[0].location.state.charAt(0).toUpperCase() + data[i].results[0].location.state.slice(1);
+      const cellNumber = data[i].results[0].phone;
+      const address = data[i].results[0].location.street + ', ' + location + ' ' + data[i].results[0].location.postcode;
+      const birthday = data[i].results[0].dob.date;
+      generateGallery(bioPic, name, email, location);
+  }
+}
 
 function checkStatus(response) {
   if(response.ok) {
@@ -51,37 +60,19 @@ function checkStatus(response) {
     return Promise.reject(new Error(response.statusText));
   }
 }
-/*
-function generateGalley (data) {
-  const galleyBio = `
+
+function generateGallery(dataImage, dataName, dataEmail, dataLocation) {
+  const galleryBio = `
     <div class="card">
         <div class="card-img-container">
-            <img class="card-img" src="https://placehold.it/90x90" alt="profile picture">
+            <img class="card-img" src="${dataImage}" alt="profile picture">
         </div>
         <div class="card-info-container">
-            <h3 id="name" class="card-name cap">data[0].results[0].gender</h3>
-            <p class="card-text">email</p>
-            <p class="card-text cap">city, state</p>
+            <h3 id="name" class="card-name cap">${dataName}</h3>
+            <p class="card-text">${dataEmail}</p>
+            <p class="card-text cap">${dataLocation}</p>
         </div>
     </div>
   `;
+  gallery.innerHTML += galleryBio;
 }
-
-window.onload = function (){
-  generateGalley();
-
-}
-
-/*
-<div class="card">
-    <div class="card-img-container">
-        <img class="card-img" src="https://placehold.it/90x90" alt="profile picture">
-    </div>
-    <div class="card-info-container">
-        <h3 id="name" class="card-name cap">first last</h3>
-        <p class="card-text">email</p>
-        <p class="card-text cap">city, state</p>
-    </div>
-</div>
-
-*/
