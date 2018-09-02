@@ -18,7 +18,7 @@ function fetchData(url) {
 
 Promise.all([
   fetchData('https://randomuser.me/api/?format=json&results=12')
-]).then(data => dataBlock(data)).then(document.querySelectorAll('.modal-container').style.display = 'none')
+]).then(data => dataBlock(data))
 
 
   //-------------------------------
@@ -40,6 +40,13 @@ function dataBlock(data) {
       const birthday = data[0].results[i].dob.date;
       generateGallery(bioPic, name, email, location);
       generateModal(bioPic, name, email, location, cellNumber, address, birthday);
+      document.querySelectorAll('.card')[i].addEventListener('click', function (){
+        document.querySelectorAll('.modal-container')[i].style.display = 'block';
+      });
+      document.querySelectorAll('.modal-close-btn')[i].addEventListener('click', function (){
+        document.querySelectorAll('.modal-container')[i].style.display = 'none';
+      })
+
   }
 }
 
@@ -52,8 +59,8 @@ function checkStatus(response) {
 }
 
 function generateGallery(image, name, email, location) {
-  const galleryBio = `
-    <div class="card">
+  const galleryBio = document.createElement('div');
+  galleryBio.innerHTML = `
         <div class="card-img-container">
             <img class="card-img" src="${image}" alt="profile picture">
         </div>
@@ -62,15 +69,15 @@ function generateGallery(image, name, email, location) {
             <p class="card-text">${email}</p>
             <p class="card-text cap">${location}</p>
         </div>
-    </div>
   `;
-  gallery.innerHTML += galleryBio;
+  galleryBio.setAttribute('class', 'card');
+  gallery.appendChild(galleryBio);
 }
 
 
 function generateModal(image, name, email, location, cell, address, birthday) {
-  const modalBio = `
-  <div class="modal-container">
+  const modalBio = document.createElement('div');
+  modalBio.innerHTML = `
       <div class="modal">
           <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
           <div class="modal-info-container">
@@ -83,9 +90,10 @@ function generateModal(image, name, email, location, cell, address, birthday) {
               <p class="modal-text">${address}</p>
               <p class="modal-text">${birthday}</p>
           </div>
-      </div>
   `;
-  modal.innerHTML += modalBio;
+  modalBio.setAttribute('class', 'modal-container');
+  modal.appendChild(modalBio);
+  modalBio.style.display = 'none';
 }
 
 //-------------------------------
