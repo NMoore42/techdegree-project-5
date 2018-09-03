@@ -1,8 +1,10 @@
 /*******************************************
 USE A PUBLIC API TO CREATE AN EMPLOYEE DIRECTORY PROJECT
 *********************************************/
+const totalBios = 12;
 const gallery = document.getElementById('gallery');
 const modal = document.getElementById('modal');
+const modalPrev = document.getElementById('modal-prev');
 
 
 //-------------------------------
@@ -17,7 +19,7 @@ function fetchData(url) {
 }
 
 Promise.all([
-  fetchData('https://randomuser.me/api/?format=json&results=12&nat=us')
+  fetchData('https://randomuser.me/api/?format=json&results=' + totalBios + '&nat=us')
 ]).then(data => dataBlock(data))
 
 
@@ -26,7 +28,7 @@ Promise.all([
   //-------------------------------
 
 function dataBlock(data) {
-  for (let i = 0; i <=11 ; i += 1) {
+  for (let i = 0; i <=totalBios-1; i += 1) {
       const bioPic = data[0].results[i].picture.large;
       const name = data[0].results[i].name.first + ' ' + data[0].results[i].name.last;
       const email = data[0].results[i].email;
@@ -38,13 +40,10 @@ function dataBlock(data) {
                        '/' +data[0].results[i].dob.date.substring(1,3);
       generateGallery(bioPic, name, email, location);
       generateModal(bioPic, name, email, location, cellNumber, address, birthday);
-      document.querySelectorAll('.card')[i].addEventListener('click', function (){
-        document.querySelectorAll('.modal-container')[i].style.display = 'block';
-      });
-      document.querySelectorAll('.modal-close-btn')[i].addEventListener('click', function (){
-        document.querySelectorAll('.modal-container')[i].style.display = 'none';
-      })
-
+      openModal(i);
+      closeModal(i);
+      modalPre(i);
+      modalNext(i);
   }
 }
 
@@ -87,6 +86,10 @@ function generateModal(image, name, email, location, cell, address, birthday) {
               <p class="modal-text">${cell}</p>
               <p class="modal-text cap">${address}</p>
               <p class="modal-text">${birthday}</p>
+            <div class="modal-btn-container">
+                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                <button type="button" id="modal-next" class="modal-next btn">Next</button>
+            </div>
           </div>
   `;
   modalBio.setAttribute('class', 'modal-container');
@@ -95,5 +98,41 @@ function generateModal(image, name, email, location, cell, address, birthday) {
 }
 
 //-------------------------------
-// EVENT LISTNER
+// EVENT LISTNER FUNCTIONS
 //-------------------------------
+
+function openModal(input) {
+  document.querySelectorAll('.card')[input].addEventListener('click', function (){
+    document.querySelectorAll('.modal-container')[input].style.display = 'block';
+  });
+}
+
+function closeModal(input) {
+  document.querySelectorAll('.modal-close-btn')[input].addEventListener('click', function (){
+    document.querySelectorAll('.modal-container')[input].style.display = 'none';
+  });
+}
+
+function modalPre(input) {
+  document.querySelectorAll('.modal-prev')[input].addEventListener('click', function () {
+    if (input > 0) {
+      document.querySelectorAll('.modal-container')[input].style.display = 'none';
+      document.querySelectorAll('.modal-container')[input-1].style.display = 'block';
+    } else {
+      document.querySelectorAll('.modal-container')[input].style.display = 'none';
+      document.querySelectorAll('.modal-container')[totalBios-1].style.display = 'block';
+    }
+  });
+}
+
+function modalNext(input) {
+  document.querySelectorAll('.modal-next')[input].addEventListener('click', function () {
+    if (input < totalBios-1) {
+      document.querySelectorAll('.modal-container')[input].style.display = 'none';
+      document.querySelectorAll('.modal-container')[input+1].style.display = 'block';
+    } else {
+      document.querySelectorAll('.modal-container')[input].style.display = 'none';
+      document.querySelectorAll('.modal-container')[0].style.display = 'block';
+    }
+  });
+}
