@@ -1,10 +1,23 @@
 /*******************************************
 USE A PUBLIC API TO CREATE AN EMPLOYEE DIRECTORY PROJECT
 *********************************************/
+//Input total desired users
 const totalBios = 12;
+
+//Other variables
 const gallery = document.getElementById('gallery');
 const modal = document.getElementById('modal');
 const modalPrev = document.getElementById('modal-prev');
+const searchBar = document.createElement('div');
+  searchBar.innerHTML = `
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>
+  `;
+
+//Appends search bar to page
+document.querySelectorAll('.search-container')[0].appendChild(searchBar);
 
 
 //-------------------------------
@@ -27,6 +40,7 @@ Promise.all([
   // HELPER FUNCTIONS
   //-------------------------------
 
+//Manages datablock and calls function for modal manipulation
 function dataBlock(data) {
   for (let i = 0; i <=totalBios-1; i += 1) {
       const bioPic = data[0].results[i].picture.large;
@@ -47,6 +61,7 @@ function dataBlock(data) {
   }
 }
 
+//Checks status of fetch call
 function checkStatus(response) {
   if(response.ok) {
     return Promise.resolve(response);
@@ -55,6 +70,7 @@ function checkStatus(response) {
   }
 }
 
+//Generates gallery information
 function generateGallery(image, name, email, location) {
   const galleryBio = document.createElement('div');
   galleryBio.innerHTML = `
@@ -71,7 +87,7 @@ function generateGallery(image, name, email, location) {
   gallery.appendChild(galleryBio);
 }
 
-
+//Generats modal information
 function generateModal(image, name, email, location, cell, address, birthday) {
   const modalBio = document.createElement('div');
   modalBio.innerHTML = `
@@ -97,22 +113,26 @@ function generateModal(image, name, email, location, cell, address, birthday) {
   modalBio.style.display = 'none';
 }
 
+
 //-------------------------------
 // EVENT LISTNER FUNCTIONS
 //-------------------------------
 
+//Opens modal on bio block click
 function openModal(input) {
   document.querySelectorAll('.card')[input].addEventListener('click', function (){
     document.querySelectorAll('.modal-container')[input].style.display = 'block';
   });
 }
 
+//Closes modal on X click
 function closeModal(input) {
   document.querySelectorAll('.modal-close-btn')[input].addEventListener('click', function (){
     document.querySelectorAll('.modal-container')[input].style.display = 'none';
   });
 }
 
+//Switches to previous modual on prev button click
 function modalPre(input) {
   document.querySelectorAll('.modal-prev')[input].addEventListener('click', function () {
     if (input > 0) {
@@ -125,6 +145,7 @@ function modalPre(input) {
   });
 }
 
+//Switches to next modal on next button click
 function modalNext(input) {
   document.querySelectorAll('.modal-next')[input].addEventListener('click', function () {
     if (input < totalBios-1) {
@@ -136,3 +157,17 @@ function modalNext(input) {
     }
   });
 }
+
+//Searchs and filters bios based on keyup value
+document.getElementById('search-input').addEventListener('input', function () {
+  let userInput = document.getElementById('search-input');
+  let bioName = document.querySelectorAll('.card-name');
+  let bioProfile = document.querySelectorAll('.card');
+  for (let i = 0; i <=totalBios-1; i += 1){
+    if (!bioName[i].innerHTML.toLowerCase().includes(userInput.value.toLowerCase())) {
+      bioProfile[i].style.display = 'none';
+    } else {
+      bioProfile[i].style.display = '';
+    }
+  }
+});
