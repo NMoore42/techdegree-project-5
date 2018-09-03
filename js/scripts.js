@@ -17,7 +17,7 @@ function fetchData(url) {
 }
 
 Promise.all([
-  fetchData('https://randomuser.me/api/?format=json&results=12')
+  fetchData('https://randomuser.me/api/?format=json&results=12&nat=us')
 ]).then(data => dataBlock(data))
 
 
@@ -28,16 +28,14 @@ Promise.all([
 function dataBlock(data) {
   for (let i = 0; i <=11 ; i += 1) {
       const bioPic = data[0].results[i].picture.large;
-      const name = data[0].results[i].name.first.charAt(0).toUpperCase() + data[0].results[i].name.first.slice(1) +
-        ' ' +
-        data[0].results[i].name.last.charAt(0).toUpperCase() + data[0].results[i].name.last.slice(1);
+      const name = data[0].results[i].name.first + ' ' + data[0].results[i].name.last;
       const email = data[0].results[i].email;
-      const location = data[0].results[i].location.city.charAt(0).toUpperCase() + data[0].results[i].location.city.slice(1) +
-        ', ' +
-        data[0].results[i].location.state.charAt(0).toUpperCase() + data[0].results[i].location.state.slice(1);
+      const location = data[0].results[i].location.city + ', ' + data[0].results[i].location.state;
       const cellNumber = data[0].results[i].phone;
       const address = data[0].results[i].location.street + ', ' + location + ' ' + data[0].results[i].location.postcode;
-      const birthday = data[0].results[i].dob.date;
+      const birthday = 'Birthday: ' + data[0].results[i].dob.date.substring(5,7) +
+                       '/' + data[0].results[i].dob.date.substring(8,10) +
+                       '/' +data[0].results[i].dob.date.substring(1,3);
       generateGallery(bioPic, name, email, location);
       generateModal(bioPic, name, email, location, cellNumber, address, birthday);
       document.querySelectorAll('.card')[i].addEventListener('click', function (){
@@ -87,7 +85,7 @@ function generateModal(image, name, email, location, cell, address, birthday) {
               <p class="modal-text cap">${location}</p>
               <hr>
               <p class="modal-text">${cell}</p>
-              <p class="modal-text">${address}</p>
+              <p class="modal-text cap">${address}</p>
               <p class="modal-text">${birthday}</p>
           </div>
   `;
